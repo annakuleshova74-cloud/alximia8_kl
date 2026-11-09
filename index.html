@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алхимия понятий: Классы неорганических веществ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --cream: #FFF8E7;
+            --paper: #FFFDF5;
+            --pink: #F4C2C2;
+            --pink-dark: #E8A5A5;
+            --lavender: #D8BFD8;
+            --mint: #B2DFDB;
+            --green: #C8E6C9;
+            --yellow: #FFF9C4;
+            --blue: #B3E5FC;
+            --brown: #5D4037;
+            --brown-light: #8D6E63;
+            --shadow: rgba(93, 64, 55, 0.18);
+            --shadow-strong: rgba(93, 64, 55, 0.28);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cream);
+            color: var(--brown);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(244, 194, 194, 0.25) 0%, transparent 25%),
+                radial-gradient(circle at 85% 25%, rgba(178, 223, 219, 0.25) 0%, transparent 25%),
+                radial-gradient(circle at 75% 85%, rgba(216, 191, 216, 0.25) 0%, transparent 25%),
+                radial-gradient(circle at 25% 75%, rgba(255, 249, 196, 0.3) 0%, transparent 25%);
+            background-attachment: fixed;
+        }
+
+        .bg-decoration {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.12;
+            z-index: 0;
+        }
+        .bg-dec-1 { top: 10px; left: 10px; width: 120px; }
+        .bg-dec-2 { top: 10px; right: 10px; width: 100px; }
+        .bg-dec-3 { bottom: 10px; left: 10px; width: 110px; }
+        .bg-dec-4 { bottom: 10px; right: 10px; width: 130px; }
+
+        .header {
+            background: linear-gradient(135deg, #FCE4EC 0%, #E1BEE7 50%, #B3E5FC 100%);
+            padding: 20px 20px 16px;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            z-index: 10;
+            border-bottom: 3px dashed var(--brown-light);
+        }
+
+        .header h1 {
+            font-family: 'Comic Sans MS', 'Segoe Script', cursive;
+            font-size: 30px;
+            margin-bottom: 4px;
+            color: var(--brown);
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            color: var(--brown-light);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .counter {
+            background: var(--paper);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px var(--shadow);
+            border: 2px solid var(--brown);
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 15px;
+        }
+
+        .btn {
+            background: var(--paper);
+            border: 2px solid var(--brown);
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            color: var(--brown);
+            box-shadow: 0 2px 6px var(--shadow);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) rotate(-1deg);
+            box-shadow: 0 4px 10px var(--shadow);
+            background: var(--yellow);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-area {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .side-panel {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .side-panel h2 {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--brown);
+        }
+
+        .side-panel h2::before {
+            font-size: 22px;
+        }
+
+        .opened-panel h2::before { content: "🏆"; }
+        .elements-panel h2::before { content: "⚗️"; }
+
+        .combine-panel {
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px;
+            background: linear-gradient(135deg, var(--paper) 0%, var(--yellow) 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 2px dashed var(--brown-light);
+            position: sticky;
+            top: 20px;
+        }
+
+        .combine-panel::before,
+        .combine-panel::after {
+            content: "🧪";
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.4;
+        }
+
+        .combine-panel { position: relative; }
+        .combine-panel::before { top: 8px; left: 10px; }
+        .combine-panel::after { bottom: 8px; right: 10px; }
+
+        .combine-btn {
+            background: linear-gradient(135deg, var(--brown) 0%, var(--brown-light) 100%);
+            color: var(--paper);
+            border: none;
+            padding: 14px 32px;
+            font-size: 17px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Comic Sans MS', cursive;
+            box-shadow: 0 4px 10px var(--shadow-strong);
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .combine-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px var(--shadow-strong);
+        }
+
+        .combine-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .selected-info {
+            font-size: 13px;
+            min-height: 40px;
+            font-style: italic;
+            color: var(--brown-light);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .hint-btn {
+            background: var(--lavender);
+            border: 2px solid var(--brown);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 13px;
+            transition: all 0.25s;
+            color: var(--brown);
+            font-weight: bold;
+            box-shadow: 0 2px 6px var(--shadow);
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .hint-btn:hover {
+            background: var(--pink);
+            transform: translateY(-2px);
+        }
+
+        .hint-text {
+            margin-top: 10px;
+            padding: 12px;
+            background: var(--paper);
+            border-radius: 12px;
+            display: none;
+            font-style: italic;
+            border-left: 4px solid var(--pink);
+            box-shadow: 0 2px 6px var(--shadow);
+            font-size: 13px;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        .elements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .element-card {
+            background: var(--paper);
+            border-radius: 14px;
+            padding: 12px 8px 10px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow), 0 1px 2px var(--shadow);
+            transition: all 0.25s ease;
+            border: 2.5px solid transparent;
+            position: relative;
+            user-select: none;
+            transform: rotate(var(--rot, 0deg));
+        }
+
+        .element-card::before {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 11px;
+            background: rgba(255, 249, 196, 0.75);
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .element-card:hover {
+            transform: rotate(0deg) translateY(-4px) scale(1.04);
+            box-shadow: 0 8px 16px var(--shadow-strong);
+            z-index: 5;
+        }
+
+        .element-card.selected {
+            border-color: var(--pink-dark);
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+            transform: rotate(0deg) scale(1.06);
+            box-shadow: 0 6px 14px var(--shadow-strong);
+        }
+
+        .element-card.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            background: var(--pink);
+            color: var(--brown);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .element-card.drag-over {
+            border-color: var(--mint);
+            background: var(--mint);
+            transform: rotate(0deg) scale(1.08);
+        }
+
+        .element-card.newly-discovered {
+            animation: stickerPop 0.6s ease;
+        }
+
+        @keyframes stickerPop {
+            0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+            60% { transform: rotate(3deg) scale(1.1); opacity: 1; }
+            100% { transform: rotate(var(--rot, 0deg)) scale(1); opacity: 1; }
+        }
+
+        .element-icon {
+            display: block;
+            margin: 0 auto 6px;
+            width: 52px;
+            height: 52px;
+        }
+
+        .element-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 3px;
+            line-height: 1.2;
+            color: var(--brown);
+        }
+
+        .element-formula {
+            font-size: 11px;
+            color: var(--brown-light);
+            font-style: italic;
+            font-family: 'Courier New', monospace;
+            background: rgba(255,255,255,0.6);
+            padding: 2px 6px;
+            border-radius: 8px;
+            display: inline-block;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        .book-section {
+            background: var(--paper);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 3px solid var(--brown);
+            margin-top: 10px;
+        }
+
+        .book-section h2 {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .book-category {
+            margin-bottom: 24px;
+        }
+
+        .book-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .book-category-title {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 20px;
+            margin-bottom: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, var(--pink) 0%, var(--lavender) 100%);
+            border-radius: 12px;
+            display: inline-block;
+            color: var(--brown);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .book-card {
+            background: var(--paper);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 3px 8px var(--shadow);
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 2px solid transparent;
+            transition: all 0.25s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .book-card.locked {
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--pink) 100%);
+            opacity: 0.7;
+            border: 2px dashed var(--brown-light);
+        }
+
+        .book-card h3 {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 15px;
+            margin: 8px 0 4px;
+            color: var(--brown);
+        }
+
+        .book-card .formula {
+            font-size: 12px;
+            color: var(--brown-light);
+            font-family: 'Courier New', monospace;
+            background: rgba(255,255,255,0.5);
+            padding: 3px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            word-break: break-all;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .book-card .recipe {
+            font-size: 12px;
+            color: var(--brown-light);
+            margin-top: 8px;
+            font-style: italic;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+        }
+
+        .book-card .explanation {
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 8px;
+            background: var(--yellow);
+            border-radius: 8px;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--paper);
+            padding: 28px 32px;
+            border-radius: 20px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+            z-index: 2000;
+            text-align: center;
+            display: none;
+            animation: popIn 0.35s ease;
+            max-width: 90%;
+            border: 3px solid var(--brown);
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.7) rotate(-5deg); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .message.success { border-color: var(--green); }
+        .message.failure { border-color: var(--pink); }
+        .message.educational { border-color: var(--blue); }
+
+        .message h2 {
+            font-family: 'Comic Sans MS', cursive;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .message p {
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message-btn {
+            background: var(--brown);
+            color: var(--paper);
+            border: none;
+            padding: 10px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 14px;
+            transition: all 0.25s;
+            box-shadow: 0 2px 6px var(--shadow);
+            margin: 0 4px;
+        }
+
+        .message-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+
+        .message-btn.cancel {
+            background: #ccc;
+            color: var(--brown);
+        }
+
+        .final-screen {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .final-screen h2 {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 36px;
+            margin-bottom: 14px;
+            color: var(--brown);
+        }
+
+        .final-screen .congrats { font-size: 56px; margin-bottom: 16px; }
+
+        .final-screen .task {
+            background: var(--paper);
+            padding: 24px;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 2px dashed var(--brown-light);
+            text-align: left;
+        }
+
+        .final-screen .task h3 {
+            font-family: 'Comic Sans MS', cursive;
+            margin-bottom: 10px;
+            color: var(--brown);
+            text-align: center;
+        }
+
+        .final-screen .task ol {
+            margin-top: 10px;
+            padding-left: 22px;
+        }
+
+        .final-screen .task li {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .final-screen .task textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 10px;
+            border: 2px solid var(--brown-light);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-top: 6px;
+            background: var(--cream);
+            color: var(--brown);
+        }
+
+        .final-screen .task textarea:focus {
+            outline: none;
+            border-color: var(--pink-dark);
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .final-screen .save-btn {
+            background: var(--green);
+            border: 2px solid var(--brown);
+            padding: 10px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 12px;
+            transition: all 0.25s;
+        }
+
+        .final-screen .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+
+        @media (max-width: 900px) {
+            .game-area { flex-direction: column; }
+            .combine-panel { flex: none; width: 100%; order: -1; position: static; }
+            .combine-btn { width: auto; padding: 12px 28px; }
+            .header h1 { font-size: 24px; }
+            .elements-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+            .element-icon { width: 44px; height: 44px; }
+            .element-name { font-size: 11px; }
+            .book-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="bg-decoration bg-dec-1" viewBox="0 0 100 120">
+        <path d="M35 10 L35 40 L15 95 Q10 110 25 110 L75 110 Q90 110 85 95 L65 40 L65 10 Z" fill="#F4C2C2" stroke="#5D4037" stroke-width="2"/>
+        <rect x="30" y="5" width="40" height="8" rx="2" fill="#D8BFD8" stroke="#5D4037" stroke-width="2"/>
+        <ellipse cx="50" cy="85" rx="25" ry="8" fill="#B2DFDB" opacity="0.7"/>
+    </svg>
+
+    <svg class="bg-decoration bg-dec-2" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="6" fill="#5D4037"/>
+        <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#D8BFD8" stroke-width="2" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#F4C2C2" stroke-width="2" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#B2DFDB" stroke-width="2" transform="rotate(120 50 50)"/>
+        <circle cx="90" cy="50" r="4" fill="#5D4037"/>
+        <circle cx="30" cy="15" r="4" fill="#5D4037"/>
+        <circle cx="30" cy="85" r="4" fill="#5D4037"/>
+    </svg>
+
+    <svg class="bg-decoration bg-dec-3" viewBox="0 0 100 120">
+        <circle cx="30" cy="40" r="14" fill="#B2DFDB" stroke="#5D4037" stroke-width="2"/>
+        <circle cx="70" cy="40" r="14" fill="#F4C2C2" stroke="#5D4037" stroke-width="2"/>
+        <circle cx="50" cy="75" r="14" fill="#D8BFD8" stroke="#5D4037" stroke-width="2"/>
+        <line x1="30" y1="40" x2="70" y2="40" stroke="#5D4037" stroke-width="3"/>
+        <line x1="30" y1="40" x2="50" y2="75" stroke="#5D4037" stroke-width="3"/>
+        <line x1="70" y1="40" x2="50" y2="75" stroke="#5D4037" stroke-width="3"/>
+    </svg>
+
+    <svg class="bg-decoration bg-dec-4" viewBox="0 0 120 100">
+        <rect x="10" y="70" width="100" height="6" rx="2" fill="#8D6E63"/>
+        <rect x="20" y="20" width="8" height="55" rx="2" fill="#B3E5FC" stroke="#5D4037" stroke-width="1.5"/>
+        <rect x="45" y="10" width="8" height="65" rx="2" fill="#F4C2C2" stroke="#5D4037" stroke-width="1.5"/>
+        <rect x="70" y="25" width="8" height="50" rx="2" fill="#C8E6C9" stroke="#5D4037" stroke-width="1.5"/>
+        <rect x="95" y="15" width="8" height="60" rx="2" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/>
+    </svg>
+
+    <header class="header">
+        <h1>⚗️ Алхимия понятий</h1>
+        <p class="subtitle">Классы неорганических веществ · 8 класс</p>
+        <div class="header-controls">
+            <div class="counter">🔬 Открыто: <span id="counter">0</span> из <span id="total">10</span></div>
+            <button class="btn" onclick="resetGame()">🔄 Сброс</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="game-area">
+            <div class="side-panel opened-panel">
+                <h2>Открытые понятия</h2>
+                <div class="elements-grid" id="openedGrid"></div>
+                <div id="openedEmpty" style="text-align:center; padding: 20px; color: var(--brown-light); font-style: italic;">
+                    Пока ничего не открыто.<br>Соединяйте элементы справа! →
+                </div>
+            </div>
+
+            <div class="combine-panel">
+                <div style="font-family: 'Comic Sans MS', cursive; font-size: 16px; margin-bottom: 12px; text-align: center;">⚡ Лаборатория</div>
+                <button class="combine-btn" id="combineBtn" onclick="combineSelected()" disabled>Соединить</button>
+                <div class="selected-info" id="selectedInfo">Выберите два элемента</div>
+                <button class="hint-btn" onclick="showHint()">💡 Подсказка</button>
+                <div class="hint-text" id="hintText"></div>
+            </div>
+
+            <div class="side-panel elements-panel">
+                <h2>Исходные элементы</h2>
+                <div class="elements-grid" id="elementsGrid"></div>
+            </div>
+        </div>
+
+        <div class="book-section" id="bookSection">
+            <h2>📖 Книга открытий</h2>
+            <div id="bookContent"></div>
+        </div>
+
+        <div class="final-screen" id="finalScreen">
+            <div class="congrats">🎉🏆🎉</div>
+            <h2>Поздравляем!</h2>
+            <p style="font-size: 17px;">Вы открыли все 10 понятий и стали настоящим алхимиком знаний!</p>
+            <div class="task">
+                <h3>📝 Задание для закрепления</h3>
+                <p>Выберите три любых открытых понятия и объясните их своими словами:</p>
+                <ol>
+                    <li><strong>Понятие 1:</strong><textarea placeholder="Введите объяснение..."></textarea></li>
+                    <li><strong>Понятие 2:</strong><textarea placeholder="Введите объяснение..."></textarea></li>
+                    <li><strong>Понятие 3:</strong><textarea placeholder="Введите объяснение..."></textarea></li>
+                </ol>
+                <button class="save-btn" onclick="saveAnswers()">Сохранить ответы</button>
+            </div>
+            <button class="combine-btn" onclick="resetGame()" style="margin-top: 16px; width: auto;">🔄 Пройти заново</button>
+        </div>
+    </div>
+
+    <div class="message" id="messageModal">
+        <h2 id="messageTitle"></h2>
+        <p id="messageText"></p>
+        <button class="message-btn" onclick="closeMessage()">OK</button>
+    </div>
+
+    <div class="message" id="resetModal">
+        <h2>⚠️ Сбросить прогресс?</h2>
+        <p>Все открытые понятия будут потеряны.</p>
+        <div style="margin-top: 12px;">
+            <button class="message-btn" onclick="confirmReset()">Да, сбросить</button>
+            <button class="message-btn cancel" onclick="closeReset()">Отмена</button>
+        </div>
+    </div>
+
+    <script>
+        const elements = [
+            { id: 'metal', name: 'Металл', symbol: 'Me', color: '#B3E5FC',
+              icon: `<svg viewBox="0 0 60 60"><rect x="10" y="10" width="40" height="40" rx="4" fill="#B3E5FC" stroke="#5D4037" stroke-width="2"/><circle cx="22" cy="22" r="4" fill="#5D4037"/><circle cx="38" cy="22" r="4" fill="#5D4037"/><circle cx="22" cy="38" r="4" fill="#5D4037"/><circle cx="38" cy="38" r="4" fill="#5D4037"/><circle cx="30" cy="30" r="4" fill="#5D4037"/><line x1="22" y1="22" x2="38" y2="22" stroke="#5D4037" stroke-width="1.5"/><line x1="22" y1="38" x2="38" y2="38" stroke="#5D4037" stroke-width="1.5"/><line x1="22" y1="22" x2="22" y2="38" stroke="#5D4037" stroke-width="1.5"/><line x1="38" y1="22" x2="38" y2="38" stroke="#5D4037" stroke-width="1.5"/></svg>` },
+            { id: 'nonmetal', name: 'Неметалл', symbol: 'неМе', color: '#F4C2C2',
+              icon: `<svg viewBox="0 0 60 60"><circle cx="20" cy="30" r="12" fill="#F4C2C2" stroke="#5D4037" stroke-width="2"/><circle cx="40" cy="30" r="12" fill="#F4C2C2" stroke="#5D4037" stroke-width="2"/><line x1="28" y1="30" x2="32" y2="30" stroke="#5D4037" stroke-width="3"/></svg>` },
+            { id: 'oxygen', name: 'Кислород', symbol: 'O₂', color: '#C8E6C9',
+              icon: `<svg viewBox="0 0 60 60"><circle cx="22" cy="30" r="14" fill="#C8E6C9" stroke="#5D4037" stroke-width="2"/><circle cx="38" cy="30" r="14" fill="#C8E6C9" stroke="#5D4037" stroke-width="2"/><text x="22" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#5D4037">O</text><text x="38" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#5D4037">O</text></svg>` },
+            { id: 'hydrogen', name: 'Водород', symbol: 'H₂', color: '#D8BFD8',
+              icon: `<svg viewBox="0 0 60 60"><circle cx="22" cy="30" r="12" fill="#D8BFD8" stroke="#5D4037" stroke-width="2"/><circle cx="38" cy="30" r="12" fill="#D8BFD8" stroke="#5D4037" stroke-width="2"/><text x="22" y="34" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">H</text><text x="38" y="34" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">H</text></svg>` },
+            { id: 'acid_residue', name: 'Кислотный остаток', symbol: 'SO₄', color: '#FFF9C4',
+              icon: `<svg viewBox="0 0 60 60"><circle cx="30" cy="28" r="11" fill="#FFF9C4" stroke="#5D4037" stroke-width="2"/><text x="30" y="32" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">S</text><circle cx="30" cy="10" r="8" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/><text x="30" y="13" text-anchor="middle" font-size="8" fill="#5D4037">O</text><circle cx="14" cy="38" r="8" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/><text x="14" y="41" text-anchor="middle" font-size="8" fill="#5D4037">O</text><circle cx="46" cy="38" r="8" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/><text x="46" y="41" text-anchor="middle" font-size="8" fill="#5D4037">O</text><circle cx="30" cy="50" r="8" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/><text x="30" y="53" text-anchor="middle" font-size="8" fill="#5D4037">O</text><line x1="30" y1="18" x2="30" y2="20" stroke="#5D4037" stroke-width="1.5"/><line x1="22" y1="34" x2="19" y2="35" stroke="#5D4037" stroke-width="1.5"/><line x1="38" y1="34" x2="41" y2="35" stroke="#5D4037" stroke-width="1.5"/><line x1="30" y1="39" x2="30" y2="42" stroke="#5D4037" stroke-width="1.5"/></svg>` },
+            { id: 'hydroxide', name: 'Гидроксогруппа', symbol: 'OH', color: '#B2DFDB',
+              icon: `<svg viewBox="0 0 60 60"><circle cx="25" cy="30" r="13" fill="#B2DFDB" stroke="#5D4037" stroke-width="2"/><circle cx="40" cy="30" r="10" fill="#B2DFDB" stroke="#5D4037" stroke-width="2"/><text x="25" y="34" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">O</text><text x="40" y="34" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">H</text></svg>` },
+            { id: 'indicator', name: 'Индикатор', symbol: 'Лакмус', color: '#E1BEE7',
+              icon: `<svg viewBox="0 0 60 60"><path d="M25 10 L25 25 L15 50 Q12 57 20 57 L40 57 Q48 57 45 50 L35 25 L35 10 Z" fill="#E1BEE7" stroke="#5D4037" stroke-width="2"/><rect x="22" y="6" width="16" height="6" rx="1" fill="#8D6E63" stroke="#5D4037" stroke-width="1.5"/><ellipse cx="30" cy="42" rx="12" ry="5" fill="#CE93D8" opacity="0.6"/></svg>` },
+            { id: 'water', name: 'Вода', symbol: 'H₂O', color: '#B3E5FC',
+              icon: `<svg viewBox="0 0 60 60"><path d="M30 10 Q15 30 15 42 Q15 52 30 52 Q45 52 45 42 Q45 30 30 10 Z" fill="#B3E5FC" stroke="#5D4037" stroke-width="2"/><text x="30" y="42" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">H₂O</text></svg>` }
+        ];
+
+        const recipes = [
+            { id: 1, resultId: 'basic_oxide', category: 'classes', element1: 'metal', element2: 'oxygen', result: 'Основной оксид', formula: 'MeO', example: '4Na + O₂ → 2Na₂O', explanation: 'Металл соединяется с кислородом, образуя оксид с основными свойствами.' },
+            { id: 2, resultId: 'acidic_oxide', category: 'classes', element1: 'nonmetal', element2: 'oxygen', result: 'Кислотный оксид', formula: 'неМеO', example: 'S + O₂ → SO₂', explanation: 'Неметалл соединяется с кислородом, образуя оксид с кислотными свойствами.' },
+            { id: 3, resultId: 'base', category: 'classes', element1: 'metal', element2: 'hydroxide', result: 'Основание', formula: 'Me(OH)n', example: 'Na + OH → NaOH', explanation: 'Металл связывается с гидроксогруппой, образуя основание.' },
+            { id: 4, resultId: 'acid', category: 'classes', element1: 'hydrogen', element2: 'acid_residue', result: 'Кислота', formula: 'HnA', example: '2H + SO₄ → H₂SO₄', explanation: 'Водород соединяется с кислотным остатком, образуя кислоту.' },
+            { id: 5, resultId: 'salt', category: 'classes', element1: 'metal', element2: 'acid_residue', result: 'Соль', formula: 'MenAm', example: '2Na + SO₄ → Na₂SO₄', explanation: 'Металл замещает водород в кислотном остатке, образуя среднюю соль.' },
+            { id: 6, resultId: 'precipitate', category: 'properties', element1: 'base', element2: 'salt', result: 'Выпадение осадка', formula: '↓', example: '2NaOH + CuSO₄ → Cu(OH)₂↓ + Na₂SO₄', explanation: 'При взаимодействии растворимого основания с солью может выпадать осадок нового нерастворимого вещества.' },
+            { id: 7, resultId: 'neutralization', category: 'properties', element1: 'acid', element2: 'base', result: 'Реакция нейтрализации', formula: 'соль + вода', example: 'H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O', explanation: 'Кислота и основание реагируют с образованием соли и воды.' },
+            { id: 8, resultId: 'red_litmus', category: 'properties', element1: 'acid', element2: 'indicator', result: 'Красный цвет лакмуса', formula: 'pH < 7', example: '', explanation: 'В кислой среде лакмус окрашивается в красный цвет. Это признак кислоты!' },
+            { id: 9, resultId: 'blue_litmus', category: 'properties', element1: 'base', element2: 'indicator', result: 'Синий цвет лакмуса', formula: 'pH > 7', example: '', explanation: 'В среде основания лакмус окрашивается в синий цвет. Это признак основания!' },
+            { id: 10, resultId: 'hydrogen_gas', category: 'properties', element1: 'metal', element2: 'acid', result: 'Выделение водорода', formula: 'Me + кислота → H₂↑', example: 'Zn + H₂SO₄ → ZnSO₄ + H₂↑', explanation: 'Активный металл реагирует с кислотой с выделением газа водорода.' }
+        ];
+
+        const categories = {
+            classes: { title: '🧪 Классы веществ', color: '#F4C2C2' },
+            properties: { title: '⚗️ Свойства и реакции', color: '#B2DFDB' }
+        };
+
+        const nearMisses = {
+            'metal-nonmetal': 'Металл и неметалл действительно могут образовать соль (например, 2Na + Cl₂ → 2NaCl)! Но в нашей игре мы изучаем другой способ — через кислотный остаток. Попробуй: Металл + Кислотный остаток!',
+            'oxygen-hydrogen': 'Кислород и водород образуют воду (2H₂ + O₂ → 2H₂O). Но вода уже есть среди исходных элементов! Попробуй другие комбинации.',
+            'metal-hydrogen': 'Некоторые металлы реагируют с водородом, образуя гидриды (NaH), но это тема старших классов. Попробуй другие комбинации!',
+            'nonmetal-hydroxide': 'Неметаллы не образуют основания напрямую — основания состоят из металла и OH-группы. Попробуй: Металл + Гидроксогруппа!',
+            'oxygen-acid_residue': 'Кислород уже входит в состав кислотного остатка (SO₄ содержит кислород). Чтобы получить кислоту, нужен водород: Водород + Кислотный остаток!',
+            'water-indicator': 'Вода — нейтральная среда (pH = 7), индикатор в ней не меняет цвет (лакмус остаётся фиолетовым). Попробуй добавить кислоту или основание!',
+            'metal-water': 'Активные металлы (Na, K) реагируют с водой, но в нашей игре этот путь идёт через оксид. Попробуй: Металл + Кислород → Основной оксид!',
+            'nonmetal-water': 'Некоторые кислотные оксиды реагируют с водой, образуя кислоты, но сначала нужно получить оксид: Неметалл + Кислород!',
+            'acid_residue-hydroxide': 'Кислотный остаток и гидроксогруппа не соединяются напрямую — нужен металл-посредник. Попробуй разные комбинации!',
+            'oxygen-hydroxide': 'Кислород и гидроксогруппа не образуют новое вещество — OH уже содержит кислород. Попробуй другие комбинации!',
+            'hydrogen-oxygen': 'Водород и кислород образуют воду, но она уже есть в исходных элементах! Попробуй другие пары.',
+            'indicator-indicator': 'Два индикатора вместе не дадут нового результата — нужен кислотный или щелочной компонент!',
+            'water-water': 'Вода с водой — просто больше воды! Попробуй соединить воду с другим элементом.',
+            'acid_residue-acid_residue': 'Два кислотных остатка не соединяются — нужен металл или водород!',
+            'hydroxide-hydroxide': 'Две гидроксогруппы не образуют нового вещества. Попробуй соединить OH с металлом!',
+            'acidic_oxide-water': 'Кислотный оксид реагирует с водой, образуя кислоту (SO₃ + H₂O → H₂SO₄)! Но в нашей игре кислота получается другим путём: Водород + Кислотный остаток.',
+            'basic_oxide-water': 'Некоторые основные оксиды реагируют с водой, но в нашей игре мы изучаем другие свойства. Попробуй другие комбинации!'
+        };
+
+        let selectedElements = [];
+        let discoveredIds = [];
+        let hintLevel = 0;
+        let lastDiscoveredId = null;
+
+        function init() {
+            loadProgress();
+            loadAnswers();
+            renderAll();
+            updateCounter();
+            checkFinal();
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('alchemy_discovered_v4');
+                if (saved) discoveredIds = JSON.parse(saved);
+            } catch(e) {}
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('alchemy_discovered_v4', JSON.stringify(discoveredIds));
+            } catch(e) {}
+        }
+
+        function renderAll() {
+            renderElements();
+            renderOpened();
+            renderBook();
+        }
+
+        function renderElements() {
+            const grid = document.getElementById('elementsGrid');
+            grid.innerHTML = '';
+            elements.forEach((el, idx) => {
+                const card = createElementCard(el, idx);
+                grid.appendChild(card);
+            });
+        }
+
+        function renderOpened() {
+            const grid = document.getElementById('openedGrid');
+            const empty = document.getElementById('openedEmpty');
+            grid.innerHTML = '';
+            
+            if (discoveredIds.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            
+            discoveredIds.forEach(id => {
+                const recipe = recipes.find(r => r.id === id);
+                if (recipe) {
+                    const el = {
+                        id: recipe.resultId,
+                        name: recipe.result,
+                        symbol: recipe.formula,
+                        icon: getRecipeIcon(recipe.resultId),
+                        color: '#FFF5F5',
+                        isDiscovered: true
+                    };
+                    const card = createElementCard(el, elements.length + id);
+                    if (id === lastDiscoveredId) {
+                        card.classList.add('newly-discovered');
+                    }
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function renderBook() {
+            const content = document.getElementById('bookContent');
+            content.innerHTML = '';
+            
+            Object.keys(categories).forEach(catKey => {
+                const cat = categories[catKey];
+                const catRecipes = recipes.filter(r => r.category === catKey);
+                
+                const catDiv = document.createElement('div');
+                catDiv.className = 'book-category';
+                
+                const title = document.createElement('div');
+                title.className = 'book-category-title';
+                title.textContent = cat.title;
+                title.style.background = `linear-gradient(90deg, ${cat.color} 0%, var(--lavender) 100%)`;
+                catDiv.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'book-grid';
+                
+                catRecipes.forEach(recipe => {
+                    const card = document.createElement('div');
+                    const isDiscovered = discoveredIds.includes(recipe.id);
+                    card.className = `book-card ${isDiscovered ? '' : 'locked'}`;
+                    
+                    if (isDiscovered) {
+                        const el1 = findElementById(recipe.element1);
+                        const el2 = findElementById(recipe.element2);
+                        const formulaHtml = recipe.example ? `${recipe.formula}<br>${recipe.example}` : recipe.formula;
+                        card.innerHTML = `
+                            <div style="margin: 0 auto; width: 56px; height: 56px;">${getRecipeIcon(recipe.resultId)}</div>
+                            <h3>${recipe.result}</h3>
+                            <div class="formula">${formulaHtml}</div>
+                            <div class="recipe">${el1.name} + ${el2.name}</div>
+                            <div class="explanation">${recipe.explanation}</div>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div style="font-size: 44px; opacity: 0.5;">❓</div>
+                            <h3 style="opacity: 0.7;">Закрыто</h3>
+                            <div style="font-size: 11px; opacity: 0.6; margin-top: 6px;">Продолжайте эксперименты!</div>
+                        `;
+                    }
+                    grid.appendChild(card);
+                });
+                
+                catDiv.appendChild(grid);
+                content.appendChild(catDiv);
+            });
+        }
+
+        function getRecipeIcon(resultId) {
+            const icons = {
+                basic_oxide: `<svg viewBox="0 0 60 60"><path d="M25 10 L25 25 L15 50 Q12 57 20 57 L40 57 Q48 57 45 50 L35 25 L35 10 Z" fill="#C8E6C9" stroke="#5D4037" stroke-width="2"/><rect x="22" y="6" width="16" height="6" rx="1" fill="#8D6E63"/><ellipse cx="30" cy="45" rx="10" ry="4" fill="#A5D6A7"/></svg>`,
+                acidic_oxide: `<svg viewBox="0 0 60 60"><path d="M25 10 L25 25 L15 50 Q12 57 20 57 L40 57 Q48 57 45 50 L35 25 L35 10 Z" fill="#F4C2C2" stroke="#5D4037" stroke-width="2"/><rect x="22" y="6" width="16" height="6" rx="1" fill="#8D6E63"/><ellipse cx="30" cy="45" rx="10" ry="4" fill="#E8A5A5"/><circle cx="25" cy="35" r="2" fill="#5D4037"/><circle cx="35" cy="38" r="2" fill="#5D4037"/><circle cx="30" cy="32" r="2" fill="#5D4037"/></svg>`,
+                base: `<svg viewBox="0 0 60 60"><path d="M25 10 L25 25 L15 50 Q12 57 20 57 L40 57 Q48 57 45 50 L35 25 L35 10 Z" fill="#B2DFDB" stroke="#5D4037" stroke-width="2"/><rect x="22" y="6" width="16" height="6" rx="1" fill="#8D6E63"/><ellipse cx="30" cy="45" rx="10" ry="4" fill="#80CBC4"/><text x="30" y="48" text-anchor="middle" font-size="7" font-weight="bold" fill="#5D4037">OH</text></svg>`,
+                acid: `<svg viewBox="0 0 60 60"><path d="M25 10 L25 25 L15 50 Q12 57 20 57 L40 57 Q48 57 45 50 L35 25 L35 10 Z" fill="#FFF9C4" stroke="#5D4037" stroke-width="2"/><rect x="22" y="6" width="16" height="6" rx="1" fill="#8D6E63"/><ellipse cx="30" cy="45" rx="10" ry="4" fill="#FFF176"/><text x="30" y="48" text-anchor="middle" font-size="7" font-weight="bold" fill="#5D4037">H</text></svg>`,
+                salt: `<svg viewBox="0 0 60 60"><polygon points="30,10 45,25 45,45 30,55 15,45 15,25" fill="#E1BEE7" stroke="#5D4037" stroke-width="2"/><line x1="30" y1="10" x2="30" y2="55" stroke="#5D4037" stroke-width="1"/><line x1="15" y1="25" x2="45" y2="25" stroke="#5D4037" stroke-width="1"/><line x1="15" y1="45" x2="45" y2="45" stroke="#5D4037" stroke-width="1"/></svg>`,
+                precipitate: `<svg viewBox="0 0 60 60"><path d="M20 10 L20 40 L10 50 Q8 55 15 55 L45 55 Q52 55 50 50 L40 40 L40 10 Z" fill="#E1BEE7" stroke="#5D4037" stroke-width="2"/><rect x="18" y="6" width="24" height="6" rx="2" fill="#8D6E63"/><circle cx="25" cy="45" r="3" fill="#5D4037"/><circle cx="35" cy="48" r="3" fill="#5D4037"/><circle cx="30" cy="42" r="3" fill="#5D4037"/><text x="30" y="30" text-anchor="middle" font-size="10" font-weight="bold" fill="#5D4037">↓</text></svg>`,
+                neutralization: `<svg viewBox="0 0 60 60"><path d="M15 15 L15 30 L8 48 Q6 54 12 54 L28 54 Q34 54 32 48 L25 30 L25 15 Z" fill="#FFF9C4" stroke="#5D4037" stroke-width="1.5"/><path d="M45 15 L45 30 L38 48 Q36 54 42 54 L58 54 Q64 54 62 48 L55 30 L55 15 Z" fill="#B2DFDB" stroke="#5D4037" stroke-width="1.5"/><text x="30" y="35" text-anchor="middle" font-size="14" font-weight="bold" fill="#5D4037">+</text><text x="30" y="52" text-anchor="middle" font-size="7" fill="#5D4037">→ соль + H₂O</text></svg>`,
+                red_litmus: `<svg viewBox="0 0 60 60"><rect x="20" y="10" width="20" height="45" rx="3" fill="#EF5350" stroke="#5D4037" stroke-width="2"/><rect x="18" y="6" width="24" height="6" rx="2" fill="#8D6E63"/><text x="30" y="38" text-anchor="middle" font-size="8" font-weight="bold" fill="white">pH&lt;7</text></svg>`,
+                blue_litmus: `<svg viewBox="0 0 60 60"><rect x="20" y="10" width="20" height="45" rx="3" fill="#42A5F5" stroke="#5D4037" stroke-width="2"/><rect x="18" y="6" width="24" height="6" rx="2" fill="#8D6E63"/><text x="30" y="38" text-anchor="middle" font-size="8" font-weight="bold" fill="white">pH&gt;7</text></svg>`,
+                hydrogen_gas: `<svg viewBox="0 0 60 60"><path d="M25 20 L25 35 L15 55 Q12 60 20 60 L40 60 Q48 60 45 55 L35 35 L35 20 Z" fill="#FFF9C4" stroke="#5D4037" stroke-width="2"/><rect x="22" y="16" width="16" height="6" rx="1" fill="#8D6E63"/><circle cx="25" cy="10" r="3" fill="#B3E5FC" stroke="#5D4037" stroke-width="1"/><circle cx="35" cy="7" r="3" fill="#B3E5FC" stroke="#5D4037" stroke-width="1"/><circle cx="30" cy="4" r="3" fill="#B3E5FC" stroke="#5D4037" stroke-width="1"/><text x="30" y="50" text-anchor="middle" font-size="7" font-weight="bold" fill="#5D4037">H₂↑</text></svg>`
+            };
+            return icons[resultId] || icons.basic_oxide;
+        }
+
+        function createElementCard(el, index) {
+            const card = document.createElement('div');
+            card.className = 'element-card';
+            card.dataset.id = el.id;
+            card.draggable = true;
+            const rot = ((index * 7) % 5) - 2;
+            card.style.setProperty('--rot', rot + 'deg');
+            card.innerHTML = `<span class="element-icon">${el.icon}</span><div class="element-name">${el.name}</div><div class="element-formula">${el.symbol}</div>`;
+            card.addEventListener('click', () => selectElement(el.id));
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragover', handleDragOver);
+            card.addEventListener('drop', handleDrop);
+            card.addEventListener('dragleave', handleDragLeave);
+            card.addEventListener('dragend', handleDragEnd);
+            return card;
+        }
+
+        function selectElement(id) {
+            if (selectedElements.includes(id)) {
+                selectedElements = selectedElements.filter(e => e !== id);
+            } else if (selectedElements.length < 2) {
+                selectedElements.push(id);
+            } else {
+                selectedElements[1] = id;
+            }
+            updateSelection();
+        }
+
+        function updateSelection() {
+            document.querySelectorAll('.element-card').forEach(card => {
+                card.classList.remove('selected');
+                if (selectedElements.includes(card.dataset.id)) {
+                    card.classList.add('selected');
+                }
+            });
+            const info = document.getElementById('selectedInfo');
+            const btn = document.getElementById('combineBtn');
+            if (selectedElements.length === 0) {
+                info.textContent = 'Выберите два элемента';
+                btn.disabled = true;
+            } else if (selectedElements.length === 1) {
+                const el = findElementById(selectedElements[0]);
+                info.textContent = `Выбран: ${el.name} — выберите ещё один`;
+                btn.disabled = true;
+            } else {
+                const el1 = findElementById(selectedElements[0]);
+                const el2 = findElementById(selectedElements[1]);
+                info.textContent = `${el1.name} + ${el2.name}`;
+                btn.disabled = false;
+            }
+        }
+
+        function findElementById(id) {
+            const el = elements.find(e => e.id === id);
+            if (el) return el;
+            const recipe = recipes.find(r => r.resultId === id);
+            if (recipe) return { name: recipe.result, symbol: recipe.formula };
+            return { name: id, symbol: '' };
+        }
+
+        let dragId = null;
+        function handleDragStart(e) { dragId = e.currentTarget.dataset.id; e.currentTarget.style.opacity = '0.5'; e.dataTransfer.effectAllowed = 'move'; }
+        function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const card = e.currentTarget.closest('.element-card'); if (card && card.dataset.id !== dragId) card.classList.add('drag-over'); }
+        function handleDragLeave(e) { e.currentTarget.closest('.element-card').classList.remove('drag-over'); }
+        function handleDragEnd(e) { e.currentTarget.style.opacity = '1'; document.querySelectorAll('.element-card').forEach(c => c.classList.remove('drag-over')); }
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.style.opacity = '1';
+            const toCard = e.currentTarget.closest('.element-card');
+            toCard.classList.remove('drag-over');
+            const fromId = dragId;
+            const toId = toCard.dataset.id;
+            if (fromId && toId && fromId !== toId) {
+                selectedElements = [fromId, toId];
+                updateSelection();
+                combineSelected();
+            }
+        }
+
+        function combineSelected() {
+            if (selectedElements.length !== 2) return;
+            const [id1, id2] = selectedElements;
+            const recipe = recipes.find(r => (r.element1 === id1 && r.element2 === id2) || (r.element1 === id2 && r.element2 === id1));
+            
+            if (recipe) {
+                if (!discoveredIds.includes(recipe.id)) {
+                    discoveredIds.push(recipe.id);
+                    lastDiscoveredId = recipe.id;
+                    saveProgress();
+                    const formulaHtml = recipe.example ? `<strong>${recipe.result}</strong> (${recipe.formula})<br><br>${recipe.example}<br><br>${recipe.explanation}` : `<strong>${recipe.result}</strong> (${recipe.formula})<br><br>${recipe.explanation}`;
+                    showMessage('success', '🎉 Новое открытие!', formulaHtml);
+                    renderAll();
+                    updateCounter();
+                    checkFinal();
+                } else {
+                    showMessage('success', '✨ Уже открыто', `Вы уже открыли: <strong>${recipe.result}</strong>`);
+                }
+            } else {
+                const key = [id1, id2].sort().join('-');
+                const hint = nearMisses[key];
+                if (hint) {
+                    showMessage('educational', '🤔 Интересная мысль!', hint);
+                } else {
+                    showMessage('failure', '🔬 Пока нет открытия', 'Пока такого открытия в нашей лаборатории нет. Попробуй другую комбинацию!');
+                }
+            }
+            selectedElements = [];
+            updateSelection();
+        }
+
+        function showMessage(type, title, text) {
+            const modal = document.getElementById('messageModal');
+            document.getElementById('messageTitle').textContent = title;
+            document.getElementById('messageText').innerHTML = text;
+            modal.className = `message ${type}`;
+            modal.style.display = 'block';
+        }
+
+        function closeMessage() { document.getElementById('messageModal').style.display = 'none'; }
+
+        function updateCounter() {
+            document.getElementById('counter').textContent = discoveredIds.length;
+            document.getElementById('total').textContent = recipes.length;
+        }
+
+        function checkFinal() {
+            const finalScreen = document.getElementById('finalScreen');
+            if (discoveredIds.length === recipes.length) {
+                finalScreen.style.display = 'block';
+                finalScreen.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                finalScreen.style.display = 'none';
+            }
+        }
+
+        function saveAnswers() {
+            const textareas = document.querySelectorAll('.final-screen .task textarea');
+            const answers = Array.from(textareas).map(ta => ta.value.trim());
+            if (answers.every(a => a === '')) {
+                showMessage('failure', 'Пустые ответы', 'Пожалуйста, напишите объяснения хотя бы для одного понятия!');
+                return;
+            }
+            try { localStorage.setItem('alchemy_answers_v4', JSON.stringify(answers)); } catch(e) {}
+            showMessage('success', 'Ответы сохранены!', 'Спасибо за работу! Вы можете закрыть игру или пройти её заново.');
+        }
+
+        function loadAnswers() {
+            try {
+                const saved = localStorage.getItem('alchemy_answers_v4');
+                if (saved) {
+                    const answers = JSON.parse(saved);
+                    const textareas = document.querySelectorAll('.final-screen .task textarea');
+                    answers.forEach((ans, idx) => { if (textareas[idx]) textareas[idx].value = ans; });
+                }
+            } catch(e) {}
+        }
+
+        function showHint() {
+            const undiscovered = recipes.filter(r => !discoveredIds.includes(r.id));
+            const hintEl = document.getElementById('hintText');
+            if (undiscovered.length === 0) {
+                hintEl.textContent = '🎉 Все понятия уже открыты!';
+                hintEl.style.display = 'block';
+                return;
+            }
+            hintLevel = (hintLevel % 3) + 1;
+            const recipe = undiscovered[0];
+            const el1 = findElementById(recipe.element1);
+            const el2 = findElementById(recipe.element2);
+            let hintText = '';
+            if (hintLevel === 1) hintText = `💭 Подумай: что может получиться при соединении ${el1.name.toLowerCase()} и ${el2.name.toLowerCase()}?`;
+            else if (hintLevel === 2) hintText = `🧪 Попробуй соединить: ${el1.name} + ${el2.name}`;
+            else hintText = `📖 Рецепт: ${el1.name} + ${el2.name} = ${recipe.result}`;
+            hintEl.textContent = hintText;
+            hintEl.style.display = 'block';
+        }
+
+        function resetGame() { document.getElementById('resetModal').style.display = 'block'; }
+        function closeReset() { document.getElementById('resetModal').style.display = 'none'; }
+        function confirmReset() {
+            discoveredIds = [];
+            lastDiscoveredId = null;
+            hintLevel = 0;
+            selectedElements = [];
+            try { localStorage.removeItem('alchemy_discovered_v4'); localStorage.removeItem('alchemy_answers_v4'); } catch(e) {}
+            closeReset();
+            document.getElementById('hintText').style.display = 'none';
+            document.getElementById('selectedInfo').textContent = 'Выберите два элемента';
+            document.getElementById('combineBtn').disabled = true;
+            renderAll();
+            updateCounter();
+            checkFinal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        init();
+    </script>
+</body>
+</html>
